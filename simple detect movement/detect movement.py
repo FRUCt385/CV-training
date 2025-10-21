@@ -97,10 +97,10 @@ def detect_movement():
 
 
 if __name__ == "__main__":
-    #detect_movement()
-    
+    detect_movement()
+    '''
     test_rectangles=[[1,2,5,6],
                      [4,3,5,8],
                      [20,20,2,2]]
     print(f'Итоговые прямоугольники {unite_rectangles(test_rectangles)}')
-    
+    '''
