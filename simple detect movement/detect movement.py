@@ -1,9 +1,10 @@
 import numpy as np
-from datetime import datetime  
 import cv2 as cv
 from matplotlib import pyplot as plt
 
-def unite_rectangles(rectangles):
+# rectangles - список с прямоугольниками
+# depth - расстояние между прямоугольниками в пикселях при котором считается, что они имеют общую площадь, по умолчанию = 0
+def unite_rectangles(rectangles, depth = 0):
     
     # тут лежат объединенные прямоугольники 
     unite = []
@@ -15,7 +16,7 @@ def unite_rectangles(rectangles):
             y_m = y - _y
             
             # если левая верхняя точка или правая нижняя нового прямоугольника внутри имеющегося
-            if (0 < x_m < _w and 0 < y_m < _h) or (0 < x_m + w < _w and 0 < y_m + h < _h):         
+            if (0 < x_m < _w + depth and 0 < y_m < _h + depth) or (0 < x_m + w < _w + depth and 0 < y_m + h < _h + depth):         
                 
                 # берем максимально возможный прямоугольник из двух
                 change = True
@@ -37,8 +38,73 @@ def unite_rectangles(rectangles):
         if not change:
             unite.append([x, y, w, h])
     return unite
+'''
+unite_memory = []
+def unite_rectangles_with_memory(rectangles, depth = 0):
+    global unite_memory
+    # тут лежат объединенные прямоугольники 
+    unite = []
+    for  (x, y, w, h) in rectangles: 
+        change = False
 
-def detect_movement():
+        for i, (_x, _y, _w, _h) in enumerate(unite_memory):
+            # используем координаты уже имеющегося прямоугольника как начало координат
+            x_m = x - _x
+            y_m = y - _y
+            
+            # если левая верхняя точка или правая нижняя нового прямоугольника внутри имеющегося
+            if (0 < x_m < _w + depth and 0 < y_m < _h + depth) or (0 < x_m + w < _w + depth and 0 < y_m + h < _h + depth):         
+                
+                # берем максимально возможный прямоугольник из двух
+                change = True
+                new_x = _x if _x < x else x
+                new_y = _y if _y < y else y
+                if _x + _w > x + w:
+                    new_w = _x + _w - new_x
+                else:
+                    new_w = x + w - new_x
+                
+                if _y + _h > y + h:
+                    new_h = _y + _h - new_y
+                else:
+                    new_h = y + h - new_y
+                unite.append([new_x, new_y, new_w, new_h])
+                break
+            
+
+
+        for i, (_x, _y, _w, _h) in enumerate(unite):
+            # используем координаты уже имеющегося прямоугольника как начало координат
+            x_m = x - _x
+            y_m = y - _y
+            
+            # если левая верхняя точка или правая нижняя нового прямоугольника внутри имеющегося
+            if (0 < x_m < _w + depth and 0 < y_m < _h + depth) or (0 < x_m + w < _w + depth and 0 < y_m + h < _h + depth):         
+                
+                # берем максимально возможный прямоугольник из двух
+                change = True
+                new_x = _x if _x < x else x
+                new_y = _y if _y < y else y
+                if _x + _w > x + w:
+                    new_w = _x + _w - new_x
+                else:
+                    new_w = x + w - new_x
+                
+                if _y + _h > y + h:
+                    new_h = _y + _h - new_y
+                else:
+                    new_h = y + h - new_y
+                unite[i] = new_x, new_y, new_w, new_h
+                break
+            
+        # если не было изменений, то добавляем в список
+        if not change:
+            unite.append([x, y, w, h])
+
+    unite_memory = unite
+    return unite
+'''
+def detect_movement(depth = 0):
     cap = cv.VideoCapture(0)
   
     if not cap.isOpened():
@@ -51,8 +117,9 @@ def detect_movement():
     
     while cap.isOpened():
         ret, frame = cap.read()
+        frame = cv.resize(frame, (640, 480))
+
         if not ret:
-            print("Can't receive frame (stream end?). Exiting ...")
             break
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
@@ -81,23 +148,24 @@ def detect_movement():
             rectangles.append([x, y, w, h])
 
         #Объединение прямоугольников в группы
-        rectangles = unite_rectangles(rectangles)
+        rectangles = unite_rectangles(rectangles, depth)
         for  (x, y, w, h) in rectangles:   
             cv.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv.putText(frame, "Movement", (x, y-10), 
                        cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-    
+        
         gray2 = gray
         cv.imshow('frame', frame)
-        cv.imshow('Threshold', thresh)
-        cv.imshow('Diff', diff)
+       # cv.imshow('Threshold', thresh)
+       # cv.imshow('Diff', diff)
         #out.write(frame)
     cap.release()
     cv.destroyAllWindows()
 
 
 if __name__ == "__main__":
-    detect_movement()
+
+    detect_movement(100)
     '''
     test_rectangles=[[1,2,5,6],
                      [4,3,5,8],
