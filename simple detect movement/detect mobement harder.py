@@ -40,6 +40,12 @@ def unite_rectangles(rectangles, depth = 0):
 
 def detect_movement(depth = 0, recording = False):
     cap = cv.VideoCapture(0)
+    
+    if not cap.isOpened():
+        print('Камера недоступна')
+        return
+    
+    
     if recording:
         fourcc = cv.VideoWriter_fourcc(*'XVID')
         fps = 20.0
@@ -47,12 +53,7 @@ def detect_movement(depth = 0, recording = False):
         height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
         out = cv.VideoWriter('output.avi', fourcc, fps, (width, height))
-
-  
-    if not cap.isOpened():
-        print('Камера недоступна')
-        return
-    
+ 
     ret, frame = cap.read()
 
     bg_sub = cv.createBackgroundSubtractorMOG2(

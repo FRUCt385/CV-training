@@ -92,9 +92,9 @@ if __name__ == "__main__":
     a = call('tg.bat')
     if a == 0: print('Успешно!')
     else: print('Не выполнено(')
-'''
+    '''
     
-    
+    '''  
     while True:
         volume = get_system_volume()
         a = int(input())
@@ -108,12 +108,7 @@ if __name__ == "__main__":
         set_system_volume(volume)
 
         print(f"Текущая громкость: {volume}")
+    '''
+    model = YOLO("yolo11n.pt")
+    gesture(recording=True)
 
-    #model = YOLO("yolo11n.pt")
-    #gesture(recording=True)
-    '''
-    test_rectangles=[[1,2,5,6],
-                     [4,3,5,8],
-                     [20,20,2,2]]
-    print(f'Итоговые прямоугольники {unite_rectangles(test_rectangles)}')
-    '''
