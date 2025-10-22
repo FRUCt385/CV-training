@@ -1,0 +1,1 @@
+powershell -command "Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.Interaction]::AppActivate(\"browser\")"

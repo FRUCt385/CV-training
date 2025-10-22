@@ -1,0 +1,1 @@
+start "" "C:\Users\Alex\AppData\Local\Yandex\YandexBrowser\Application\browser.exe"

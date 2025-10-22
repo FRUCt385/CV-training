@@ -2,6 +2,12 @@ import numpy as np
 import cv2 as cv
 from ultralytics import YOLO
 
+
+import pycaw.pycaw as pycaw
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+
+
 def gesture(recording = False):
     cap = cv.VideoCapture(0)
 
@@ -55,8 +61,55 @@ def gesture(recording = False):
     cv.destroyAllWindows()
 
 
+# можно использовать для записи действий pyautogui
+
+import pycaw.pycaw as pycaw
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+
+def set_system_volume(level):
+    """Установить уровень громкости (0.0 - 1.0)"""
+    devices = pycaw.AudioUtilities.GetSpeakers()
+    interface = devices.Activate(
+        pycaw.IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(pycaw.IAudioEndpointVolume))
+    volume.SetMasterVolumeLevelScalar(level, None)
+
+def get_system_volume():
+    """Получить текущий уровень громкости"""
+    devices = pycaw.AudioUtilities.GetSpeakers()
+    interface = devices.Activate(
+        pycaw.IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(pycaw.IAudioEndpointVolume))
+    return volume.GetMasterVolumeLevelScalar()
+
+
 if __name__ == "__main__":
-    model = YOLO("yolo11n.pt")
+    '''
+    import subprocess
+    from subprocess import call
+
+    a = call('tg.bat')
+    if a == 0: print('Успешно!')
+    else: print('Не выполнено(')
+'''
+    
+    
+    while True:
+        volume = get_system_volume()
+        a = int(input())
+        if a == 0: UP = False
+        if a == 1: UP = True
+        if a == 2: break
+        volume = volume + 0.1 if UP else volume - 0.1
+        volume = 1 if volume > 1 else volume
+        volume = 0 if volume < 0 else volume
+
+        set_system_volume(volume)
+
+        print(f"Текущая громкость: {volume}")
+
+    #model = YOLO("yolo11n.pt")
     #gesture(recording=True)
     '''
     test_rectangles=[[1,2,5,6],

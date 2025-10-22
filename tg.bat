@@ -1,0 +1,1 @@
+start "" "C:\Users\Alex\AppData\Roaming\Telegram Desktop\Telegram.exe"
