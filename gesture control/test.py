@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 from ultralytics import YOLO
-
+import time
 
 import pycaw.pycaw as pycaw
 from ctypes import cast, POINTER
@@ -28,6 +28,10 @@ def gesture(recording = False):
 
     model = YOLO("yolo11n.pt")
 
+    time_t = time.time()
+
+    frame_after = frame.copy()
+
     while cap.isOpened():
         ret, frame = cap.read()
         #frame = cv.resize(frame, (640, 480))
@@ -37,20 +41,25 @@ def gesture(recording = False):
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
         
+        if time.time() - time_t >= 1:
+            print(1)
+            time_t = time.time()
         
-        results = model(frame)
-        frame_after = frame.copy()
-        for i,result in enumerate (results):
-            xyxy = result.boxes.xyxy
-            for ix,iy,x,y in xyxy: 
-                ix = int(ix)
-                iy = int(iy)
-                x = int(x)
-                y = int(y)
-                cv.rectangle(frame_after,(ix,iy),(x,y),(0,255,0),5)
-
-        cv.imshow('frame', frame)
+            results = model(frame)
+            frame_after = frame.copy()
+            for i,result in enumerate (results):
+                xyxy = result.boxes.xyxy
+                for ix,iy,x,y in xyxy: 
+                    ix = int(ix)
+                    iy = int(iy)
+                    x = int(x)
+                    y = int(y)
+                    cv.rectangle(frame_after,(ix,iy),(x,y),(0,255,0),5)
+        
+        
         cv.imshow('frame_after', frame_after)
+        cv.imshow('frame', frame)
+        
         
         if recording:
             out.write(frame)
@@ -110,5 +119,5 @@ if __name__ == "__main__":
         print(f"Текущая громкость: {volume}")
     '''
     model = YOLO("yolo11n.pt")
-    gesture(recording=True)
+    #gesture(recording=False)
 
