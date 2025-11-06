@@ -14,6 +14,7 @@ if __name__ == '__main__':
         imgsz=640,                      # размер изображения
         batch=16,                       # размер батча (уменьшите, если не хватает памяти)
         device='cuda',                  # 'cpu' или 'cuda' или 0,1 [список GPU]
+        project=model_dir,
         patience=10,
         workers=4,                      # число workers для загрузки данных
         lr0=0.01,                       # начальный learning rate
