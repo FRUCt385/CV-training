@@ -20,4 +20,4 @@ if __name__ == '__main__':
         lr0=0.01,                       # начальный learning rate
         pretrained=True,                # использовать предобученные веса
         optimizer='auto'                 # или 'AdamW'
-    )
+    ) 
