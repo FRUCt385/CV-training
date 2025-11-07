@@ -21,7 +21,7 @@ def detect(frame):
 model_dir = Path.cwd() / 'models'
 
 model = YOLO(model_dir / "face mask.pt")
-img = cv2.imread(str(Path(r"B:\datasets\face mask\images\maksssksksss623.png")))
+img = cv2.imread(str(Path(r"D:\datasets\face mask\images\maksssksksss623.png")))
 img = detect(img)
 
 #cv2.imwrite('123.jpg',img)
